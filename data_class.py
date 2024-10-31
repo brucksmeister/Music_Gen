@@ -163,7 +163,7 @@ def make_ind_data_set():
 
 
 #######added#####
-
+#####cassette######
 def get_chord_train_and_test_set_cassette(train_set_size, test_set_size):
     data = make_chord_data_set_cassette()
     train_set = data[:train_set_size]
@@ -176,12 +176,20 @@ def make_chord_data_set_cassette():
     for path, subdirs, files in os.walk(chords_folder_cassette):
         for name in files:
             if name.endswith('.pickle'):
-                print(name)
                 _path = path.replace('\\', '/') + '/'
                 _name = name.replace('\\', '/')
                 song = pickle.load(open(_path + _name, 'rb'))
                 data.append(song)
     return data
+
+
+def get_ind_train_and_test_set_cassette(train_set_size, test_set_size):
+    data, chord_data = make_ind_data_set_cassette()
+    train_set = data[:train_set_size]
+    test_set = data[train_set_size:train_set_size + test_set_size]
+    chord_train_set = chord_data[:train_set_size]
+    chord_test_set = chord_data[train_set_size:train_set_size + test_set_size]
+    return train_set, test_set, chord_train_set, chord_test_set
 
 
 def make_ind_data_set_cassette():
@@ -198,3 +206,4 @@ def make_ind_data_set_cassette():
                 data.append(song)
                 chord_data.append(song_chords)
     return data, chord_data
+###############
