@@ -1,4 +1,4 @@
-import numpy as np
+#import numpy as np
 import _pickle as pickle
 import os
 
@@ -30,7 +30,7 @@ song_histo_folder = os.path.join(working_dir, 'JamBot_experiments', 'data', shif
 source_folder
 
 ######################################################### added #########################################################
-chords_folder_cassette = os.path.join(working_dir, 'JamBot_experiments', shift_folder, 'chords_cassette', subfolder)
+chords_folder_cassette = os.path.join(working_dir, 'JamBot_experiments', 'data', shift_folder, 'chords_cassette') + subfolder
 tempo_histo_folder = os.path.join(working_dir, 'JamBot_experiments', 'data', 'tempo_histo') + subfolder
 ########################################################################################################################
 
@@ -123,15 +123,6 @@ def get_chord_train_and_test_set(train_set_size, test_set_size):
     return train_set, test_set
 
 
-def get_ind_train_and_test_set(train_set_size, test_set_size):
-    data, chord_data = make_ind_data_set()
-    train_set = data[:train_set_size]
-    test_set = data[train_set_size:train_set_size + test_set_size]
-    chord_train_set = chord_data[:train_set_size]
-    chord_test_set = chord_data[train_set_size:train_set_size + test_set_size]
-    return train_set, test_set, chord_train_set, chord_test_set
-
-
 def make_chord_data_set():
     data = []
     for path, subdirs, files in os.walk(chords_index_folder):
@@ -144,6 +135,13 @@ def make_chord_data_set():
     return data
 
 
+def get_ind_train_and_test_set(train_set_size, test_set_size):
+    data, chord_data = make_ind_data_set()
+    train_set = data[:train_set_size]
+    test_set = data[train_set_size:train_set_size + test_set_size]
+    chord_train_set = chord_data[:train_set_size]
+    chord_test_set = chord_data[train_set_size:train_set_size + test_set_size]
+    return train_set, test_set, chord_train_set, chord_test_set
 
 
 def make_ind_data_set():
@@ -166,6 +164,26 @@ def make_ind_data_set():
 
 #######added#####
 
+def get_chord_train_and_test_set_cassette(train_set_size, test_set_size):
+    data = make_chord_data_set_cassette()
+    train_set = data[:train_set_size]
+    test_set = data[train_set_size:train_set_size + test_set_size]
+    return train_set, test_set
+
+
+def make_chord_data_set_cassette():
+    data = []
+    for path, subdirs, files in os.walk(chords_folder_cassette):
+        for name in files:
+            if name.endswith('.pickle'):
+                print(name)
+                _path = path.replace('\\', '/') + '/'
+                _name = name.replace('\\', '/')
+                song = pickle.load(open(_path + _name, 'rb'))
+                data.append(song)
+    return data
+
+
 def make_ind_data_set_cassette():
     data = []
     chord_data = []
@@ -180,23 +198,3 @@ def make_ind_data_set_cassette():
                 data.append(song)
                 chord_data.append(song_chords)
     return data, chord_data
-
-
-def get_chord_train_and_test_set_cassette(train_set_size, test_set_size):
-    data = make_chord_data_set_cassette()
-    train_set = data[:train_set_size]
-    test_set = data[train_set_size:train_set_size + test_set_size]
-    return train_set, test_set
-
-
-def make_chord_data_set_cassette():
-    data = []
-    for path, subdirs, files in os.walk(chords_folder_cassette):
-        for name in files:
-            if name.endswith('.pickle'):
-                _path = path.replace('\\', '/') + '/'
-                _name = name.replace('\\', '/')
-                song = pickle.load(open(_path + _name, 'rb'))
-                data.append(song)
-    return data
-
